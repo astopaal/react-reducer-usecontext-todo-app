@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useTodoLayerValue } from "./context/TodoContext";
 import TodoList from "./components/TodoList";
+import "./App.css";
 
 const App = () => {
   const [{ todos }, dispatch] = useTodoLayerValue();
@@ -13,7 +14,7 @@ const App = () => {
     if(!content) return;
 
     const newTodo = {
-      id: todos[todos.length - 1]?.id + 1 || 1,
+      id: Date.now(),
       content,
       isCompleted: false,
     };
@@ -26,7 +27,6 @@ const App = () => {
     setContent("");
 
   };
-
 
   return (
     <div className="container">
@@ -44,7 +44,7 @@ const App = () => {
 
 
       {/* todo list */}
-      {/* <TodoList todos={todos} /> */}
+      <TodoList todos={todos} />
     </div>
   );
 };

@@ -1,9 +1,31 @@
-import React from 'react'
+import React from "react";
+import { GrFormClose, GrFormEdit, GrFormCheckmark } from "react-icons/gr";
+import { useTodoLayerValue } from "../context/TodoContext";
+const Todo = ({ todo }) => {
 
-const Todo = () => {
+    const [{}, dispatch] = useTodoLayerValue();
+
+    const removeTodo = () => {  
+        //remove todo
+        dispatch({
+            type: "REMOVE_TODO",
+            payload: todo.id,
+        });
+    };
   return (
-    <div>todo</div>
-  )
-}
+    <div className="todo-row">
+      <div>{todo.content}</div>
 
-export default Todo
+      <div className="todo-icons">
+        <GrFormClose
+          className="todo-icon"
+          onClick={() => removeTodo(todo.id)}
+        />
+        <GrFormEdit className="todo-icon" />
+        <GrFormCheckmark className="todo-icon" />
+      </div>
+    </div>
+  );
+};
+
+export default Todo;
