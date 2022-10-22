@@ -1,28 +1,76 @@
-import React from "react";
+import React, { useState } from "react";
 import { GrFormClose, GrFormEdit, GrFormCheckmark } from "react-icons/gr";
 import { useTodoLayerValue } from "../context/TodoContext";
+import clsx from "clsx";
+
 const Todo = ({ todo }) => {
+  const [{}, dispatch] = useTodoLayerValue();
+  const [editable, setEditable] = useState(false);
+  const [content, setContent] = useState(todo.content);
 
-    const [{}, dispatch] = useTodoLayerValue();
+  const removeTodo = (todoId) => {
+    //remove todo
+    dispatch({
+      type: "REMOVE_TODO",
+      payload: todo.id,
+    });
+  };
+  const completeTodo = (todoId) => {
+    dispatch({
+      type: "COMPLETE_TODO",
+      payload: todo.id,
+    });
+  };
+  const updateTodo = ({ todoId, newValue }) => {
+    dispatch({
+      type: "UPDATE_TODO",
+      payload: {
+        todoId,
+        newValue,
+      },
+    });
+  };
 
-    const removeTodo = () => {  
-        //remove todo
-        dispatch({
-            type: "REMOVE_TODO",
-            payload: todo.id,
-        });
-    };
+  const todoStyle = clsx({
+    ["todo-row"]: true,
+    ["completed"]: todo.isCompleted,
+  });
+
   return (
-    <div className="todo-row">
-      <div>{todo.content}</div>
+    <div className={todoStyle}>
+      <div onClick={() => editable ? '' : completeTodo(todo.id)}>
+        {editable ? (
+          <input
+            type="text"
+            value={content}
+            onChange={(event) => setContent(event.target.value)}
+            className="todo-input-edit"
+          />
+        ) : (
+          todo.content
+        )}
+      </div>
 
       <div className="todo-icons">
         <GrFormClose
           className="todo-icon"
           onClick={() => removeTodo(todo.id)}
         />
-        <GrFormEdit className="todo-icon" />
-        <GrFormCheckmark className="todo-icon" />
+        {editable ? (
+          <GrFormCheckmark
+            className="todo-icon"
+            onClick={() => {
+              updateTodo({
+                todoId: todo.id,
+                newValue: content,
+              });
+              setContent("");
+              setEditable(false);
+            }}
+          />
+        ) : (
+          <GrFormEdit className="todo-icon" onClick={() => setEditable(true)} />
+        )}
       </div>
     </div>
   );
